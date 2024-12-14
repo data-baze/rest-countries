@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import CountryItem from "./component/Country";
+
 // Create a simple React application that displays a list of countries and their capitals
 // The application should have the following features:
 
@@ -24,7 +27,7 @@ const FILTERABLE_CAPITALS = [
 ] as const;
 type Capital = (typeof FILTERABLE_CAPITALS)[number];
 
-interface Country {
+export interface Country {
   name: {
     common: string;
   };
@@ -32,7 +35,72 @@ interface Country {
 }
 
 export default function App() {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
+  const [filteredCapital, setFilterByCapital] = useState<Capital | "">("");
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch(BASE_URL);
+        if (!response.ok) {
+          throw new Error("invalid, could not fetch countries");
+        }
+        const data: Country[] = await response.json();
+        setCountries(data);
+        setFilteredCountries(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    if (filteredCapital) {
+      const fetchCapital = async () => {
+        try {
+          const response = await fetch(BASE_URL);
+          if (!response.ok) {
+            throw new Error("invalid, could not fetch countries");
+          }
+          const data: Country[] = await response.json();
+          setCountries(data);
+          setFilteredCountries(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchCapital();
+    } else {
+      setFilteredCountries(countries);
+    }
+  }, [filteredCapital, countries]);
+
   return (
-    <div className="App"><h1>React Interview</h1></div>
+    <div className="App">
+      <h1>React Interview</h1>
+
+      <div>
+        <label htmlFor="capital">Capital of Countries: </label>
+        <select
+          id="capital"
+          value={filteredCapital}
+          onChange={(e) => setFilterByCapital(e.target.value as Capital | "")}
+        >
+          <option value="">All</option>
+          {FILTERABLE_CAPITALS.map((capital, index) => (
+            <option key={index} value={capital}>
+              {capital}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="countries-list">
+        {filteredCountries.map((country) => (
+          <CountryItem key={country.name.common} country={country} />
+        ))}
+      </div>
+    </div>
   );
 }
