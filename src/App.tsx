@@ -28,6 +28,7 @@ const FILTERABLE_CAPITALS = [
 type Capital = (typeof FILTERABLE_CAPITALS)[number];
 
 export interface Country {
+  // I export the inteface so that i can use it in the CountryItem componenet
   name: {
     common: string;
   };
