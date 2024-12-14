@@ -43,7 +43,7 @@ export default function App() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch(BASE_URL);
+        const response = await fetch(`${BASE_URL}/all`);
         if (!response.ok) {
           throw new Error("invalid, could not fetch countries");
         }
@@ -61,7 +61,9 @@ export default function App() {
     if (filteredCapital) {
       const fetchCapital = async () => {
         try {
-          const response = await fetch(BASE_URL);
+          const response = await fetch(
+            `${BASE_URL}/capital/${filteredCapital}`
+          );
           if (!response.ok) {
             throw new Error("invalid, could not fetch countries");
           }
