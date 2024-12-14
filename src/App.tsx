@@ -78,7 +78,7 @@ export default function App() {
     } else {
       setFilteredCountries(countries);
     }
-  }, [filteredCapital, countries]);
+  }, [filteredCapital]);
 
   return (
     <div className="App">
